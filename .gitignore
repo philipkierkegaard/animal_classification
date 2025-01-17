@@ -1,0 +1,13 @@
+# Ignore model files (they are often large and should be tracked with Git LFS)
+models/
+
+# Ignore processed data files (you can store these with Git LFS)
+data/processed/
+
+# Ignore raw data (typically too large for Git)
+data/raw/
+
+# Ignore other potential files/folders
+*.log
+*.tmp
+*.bak
