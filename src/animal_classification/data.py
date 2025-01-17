@@ -1,66 +1,41 @@
 import os
-import torch
-import zipfile
 import shutil
-from kaggle.api.kaggle_api_extended import KaggleApi
-from torchvision import transforms
+import torch
+import torchvision.transforms as transforms
 from PIL import Image
+import kagglehub
+from pathlib import Path
 
-# Initialize Kaggle API client
-api = KaggleApi()
-api.authenticate()
-
-# Define the Kaggle dataset and directory
-dataset_name = "antobenedetti/animals"  # Replace with your desired dataset
-raw_data_dir = os.path.join(os.path.dirname(__file__), "../../data/raw")  # Path to 'data/raw'
-processed_data_dir = os.path.join(os.path.dirname(__file__), "../../data/processed")  # Path to 'data/processed'
-
-# Create the raw and processed data directories if they don't exist
-os.makedirs(raw_data_dir, exist_ok=True)
-os.makedirs(processed_data_dir, exist_ok=True)
-
-# Define the file path where the dataset will be saved
-dataset_path = os.path.join(raw_data_dir, "animals.zip")
-
-# Function to download the dataset from Kaggle
-def download_dataset(dataset_name, dest_path):
-    print(f"Downloading dataset {dataset_name} from Kaggle...")
-    api.dataset_download_files(dataset_name, path=dest_path, unzip=False)
-    print(f"Dataset downloaded to {dest_path}")
-
-# Function to extract the dataset (if needed)
-def extract_dataset(file_path, dest_dir):
-    print(f"Extracting dataset {file_path}...")
+def download_and_move_dataset():
+    # Specify the dataset name from Kaggle
+    dataset_name = "antobenedetti/animals"
     
-    # Check if the downloaded path is a directory (i.e., if it's a folder with a zip file inside)
-    if os.path.isdir(file_path):
-        nested_zip_path = os.path.join(file_path, "animals.zip")  # Path to the nested zip file
-        if os.path.isfile(nested_zip_path):
-            print(f"Found nested zip file: {nested_zip_path}")
-            file_path = nested_zip_path  # Update to the nested zip file
-        else:
-            print(f"Error: No zip file found inside {file_path}.")
-            return
+    # Specify the directory paths
+    raw_data_dir = "data/raw"
+    processed_data_dir = "data/processed"
+    
+    # Ensure both directories exist; create them if they don't
+    os.makedirs(raw_data_dir, exist_ok=True)
+    os.makedirs(processed_data_dir, exist_ok=True)
 
-    # Now, attempt to extract the file (whether it's directly a zip file or nested)
-    if file_path.endswith(".zip"):
-        try:
-            with zipfile.ZipFile(file_path, 'r') as zip_ref:
-                zip_ref.extractall(dest_dir)
-            print(f"Dataset extracted to {dest_dir}")
-        except zipfile.BadZipFile:
-            print(f"Error: The file {file_path} is not a valid zip file.")
-    elif file_path.endswith(".tar.gz") or file_path.endswith(".tgz"):
-        try:
-            with tarfile.open(file_path, 'r:gz') as tar_ref:
-                tar_ref.extractall(dest_dir)
-            print(f"Dataset extracted to {dest_dir}")
-        except tarfile.TarError:
-            print(f"Error: The file {file_path} is not a valid tar file.")
-    else:
-        print(f"Unsupported file format: {file_path}")
+    # Download the dataset
+    print("Downloading dataset...")
+    path = kagglehub.dataset_download(dataset_name)
+    
+    print("Dataset downloaded successfully!")
+    print("Dataset files are located at:", path)
 
-# Define the transformation pipeline
+    # Move the downloaded dataset to 'data/raw'
+    print("Moving dataset to 'data/raw'...")
+    dataset_name = os.path.basename(path)
+    target_path = os.path.join(raw_data_dir, dataset_name)
+
+    # Move the dataset folder (or file) to the target directory
+    shutil.move(path, target_path)
+    print(f"Dataset moved to: {target_path}")
+    
+    return target_path
+
 transform = transforms.Compose([
     transforms.Resize((128, 128)),   # Resize image to 128x128 (you can adjust this)
     transforms.ToTensor(),           # Convert image to PyTorch tensor
@@ -97,42 +72,29 @@ def convert_and_save_images(image_dir, dest_dir, transform):
         torch.save(class_tensor, tensor_save_path)
         print(f"Saved tensor for {class_folder} at {tensor_save_path}")
 
-# Main execution
+def main():
+    # Step 1: Download and move the dataset
+    data_dir = download_and_move_dataset()
+    print("Dataset available at:", data_dir)
+
+    # Step 2: Process images, convert to tensors, and move to 'data/processed'
+    # Define paths for both train and validation sets
+    train_image_dir = os.path.join(data_dir, "animals", "train")  # Corrected path to the train images
+    val_image_dir = os.path.join(data_dir, "animals", "val")      # Corrected path to the validation images
+    
+    # Create processed directories for both train and val
+    processed_train_dir = os.path.join("data/processed", "train")
+    processed_val_dir = os.path.join("data/processed", "val")
+    
+    # Convert and save training images as tensors
+    print("Processing training images...")
+    convert_and_save_images(train_image_dir, processed_train_dir, transform)
+    
+    # Convert and save validation images as tensors
+    print("Processing validation images...")
+    convert_and_save_images(val_image_dir, processed_val_dir, transform)
+
+    print("Finished processing all images.")
+
 if __name__ == "__main__":
-    # Download the dataset
-    download_dataset(dataset_name, dataset_path)
-
-    # Check if the file exists before trying to extract
-    if os.path.exists(dataset_path):
-        # Extract the dataset if it's a compressed file
-        extract_dataset(dataset_path, raw_data_dir)
-        
-        # After extraction, process the images into tensors and save them
-        print("Converting and saving images as tensors...")
-        
-        # Define paths for both train and validation sets
-        train_image_dir = os.path.join(raw_data_dir, "animals/train")  # Path to the extracted images (train)
-        val_image_dir = os.path.join(raw_data_dir, "animals/val")      # Path to the extracted images (val)
-        
-        # Create processed directories for both train and val
-        processed_train_dir = os.path.join(processed_data_dir, "train")
-        processed_val_dir = os.path.join(processed_data_dir, "val")
-        
-        # Convert and save training images as tensors
-        convert_and_save_images(train_image_dir, processed_train_dir, transform)
-        
-        # Convert and save validation images as tensors
-        convert_and_save_images(val_image_dir, processed_val_dir, transform)
-
-    else:
-        print(f"Error: The file {dataset_path} does not exist or is not a valid file.")
-
-    # Path to the 'animals.zip' folder
-    animals_zip_folder = os.path.join(raw_data_dir, "animals.zip")
-
-    # Check if the directory exists before trying to delete it
-    if os.path.isdir(animals_zip_folder):
-        shutil.rmtree(animals_zip_folder)
-        print(f"Deleted the folder: {animals_zip_folder}")
-    else:
-        print(f"The folder {animals_zip_folder} does not exist.")
+    main()
