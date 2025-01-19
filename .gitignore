@@ -7,6 +7,9 @@ data/processed/
 # Ignore raw data (typically too large for Git)
 data/raw/
 
+#Ignore wband runs
+wband
+
 # Ignore other potential files/folders
 *.log
 *.tmp
