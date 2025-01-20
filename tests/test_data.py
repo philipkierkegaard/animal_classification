@@ -28,7 +28,6 @@ def test_processed_data_files():
 
 
 
-
 # Test if the model's output shape matches the expected shape
 def test_model_output_shape():
     num_classes = 5  # Assuming 5 classes: cat, dog, elephant, horse, lion
@@ -45,6 +44,7 @@ def test_model_output_shape():
     assert output_tensor.shape == (32, num_classes), \
         f"Expected output shape (32, {num_classes}), but got {output_tensor.shape}"
  
+
 def test_transform():
     """Test the transform pipeline."""
     from src.animal_classification.data import transform
