@@ -47,6 +47,7 @@ def test_model_output_shape():
  
 def test_transform():
     """Test the transform pipeline."""
+    from src.animal_classification.data import transform
     from PIL import Image
     import numpy as np
 
