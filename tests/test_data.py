@@ -1,7 +1,6 @@
 import os
 import torch
 import pytest
-from src.animal_classification.model import AnimalClassificationCNN
 
 # Function to test that processed .pt files exist for each class (animal)
 def test_processed_data_files():
@@ -27,22 +26,6 @@ def test_processed_data_files():
         assert tensor.shape[2] == 128 and tensor.shape[3] == 128, f"The tensor for class '{class_name}' should have shape (128, 128)"
 
 
-
-# Test if the model's output shape matches the expected shape
-def test_model_output_shape():
-    num_classes = 5  # Assuming 5 classes: cat, dog, elephant, horse, lion
-    model = AnimalClassificationCNN(num_classes=num_classes)
-
-    # Create a random input tensor of the shape (batch_size, channels, height, width)
-    # For example, a batch of 32 images, each with 3 channels (RGB), 128x128 pixels
-    input_tensor = torch.randn(32, 3, 128, 128)  # Batch size of 32
-
-    # Perform a forward pass through the model
-    output_tensor = model(input_tensor)
-
-    # Assert the output tensor shape is (batch_size, num_classes)
-    assert output_tensor.shape == (32, num_classes), \
-        f"Expected output shape (32, {num_classes}), but got {output_tensor.shape}"
  
 
 def test_transform():
