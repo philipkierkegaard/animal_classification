@@ -7,6 +7,11 @@ data/processed/
 # Ignore raw data (typically too large for Git)
 data/raw/
 
+#Ignore wband runs
+wandb/
+
+src/animal_classification/__pycache__
+
 # Ignore other potential files/folders
 *.log
 *.tmp
