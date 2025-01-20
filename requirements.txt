@@ -1,6 +1,7 @@
 invoke==2.2.0
-kaggle==1.6.17
+kagglehub==0.3.6
 Pillow==11.1.0
+pytest==7.4.4
 scikit_learn==1.6.1
 torch==2.5.1
 torchvision==0.20.1
