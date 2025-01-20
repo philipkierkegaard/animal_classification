@@ -8,7 +8,9 @@ data/processed/
 data/raw/
 
 #Ignore wband runs
-wband
+wandb/
+
+src/animal_classification/__pycache__
 
 # Ignore other potential files/folders
 *.log
