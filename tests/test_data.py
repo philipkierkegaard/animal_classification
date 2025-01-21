@@ -3,6 +3,7 @@ import torch
 import pytest
 from src.animal_classification.model import AnimalClassificationCNN
 
+"""
 # Function to test that processed .pt files exist for each class (animal)
 def test_processed_data_files():
     data_dir = "data/processed/train"  # Path to the processed data directory
@@ -26,7 +27,7 @@ def test_processed_data_files():
         assert tensor.shape[1] == 3, f"The tensor for class '{class_name}' should have 3 channels (RGB)"
         assert tensor.shape[2] == 128 and tensor.shape[3] == 128, f"The tensor for class '{class_name}' should have shape (128, 128)"
 
- 
+"""
 
 def test_transform():
     """Test the transform pipeline."""

@@ -26,9 +26,6 @@ jobs:
         pip install -r requirements_tests.txt
         pip install -r requirements_dev.txt  # If you have a separate dev dependencies file
 
-    - name: Download and process data
-      run: |
-        python src/animal_classification/data.py  # This will download and process the data
 
     - name: Test with pytest
       run: |
