@@ -29,7 +29,7 @@ class AnimalDataset(Dataset):
 
         # Load tensors for each class from GCS
         for class_name, label in self.labels.items():
-            class_tensor_path = f"processed/train/{class_name}_data.pt"  # Path in your GCS bucket
+            class_tensor_path = f"data/processed/train/{class_name}_data.pt"  # Path in your GCS bucket
             
             blob = self.bucket.blob(class_tensor_path)
             
