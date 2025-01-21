@@ -1,4 +1,4 @@
-# Base image
+
 FROM python:3.11-slim AS base
 
 RUN apt update && \

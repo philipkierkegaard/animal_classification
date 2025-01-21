@@ -1,0 +1,17 @@
+program: src/animal_classification/train.py
+name: Animals_mlops
+project: Animals_mlops # Ensure this matches your WandB project name
+entity: thousig-danmarks-tekniske-universitet-dtu  # Replace with your actual entity name
+metric:
+  goal: minimize
+  name: validation_loss  # Ensure this matches the metric you're optimizing
+parameters:
+  lr:
+    values: [0.001, 0.01, 0.1]
+    #distribution: log_uniform
+  batch-size:
+    values: [16, 32, 64]
+  epochs:
+    values: [1, 2, 3]
+method: random  # This specifies that you want to use random search for hyperparameters
+run_cap: 5
