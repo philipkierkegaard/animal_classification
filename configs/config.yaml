@@ -1,0 +1,8 @@
+workerPoolSpecs:
+  machineSpec:
+    machineType: n1-highmem-2
+  replicaCount: 1
+  containerSpec:
+    imageUri: "europe-west1-docker.pkg.dev/animal-classification-555/animal-classification/train-image:latest"
+    command: []
+    args: []
