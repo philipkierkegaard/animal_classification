@@ -35,4 +35,3 @@ jobs:
       - name: Push Docker image to Artifact Registry
         run: |
           docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/train-image:latest
-europe-west1-docker.pkg.dev/animal-classification-555/animal-classification
