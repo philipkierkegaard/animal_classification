@@ -31,7 +31,7 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          docker build -f train.Dockerfile -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/train-image:latest .
+          docker build -f dockerfiles/train.Dockerfile -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/train-image:latest .
 
       - name: Push Docker image to Artifact Registry
         run: |
