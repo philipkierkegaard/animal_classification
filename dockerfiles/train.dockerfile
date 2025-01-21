@@ -10,10 +10,11 @@ COPY requirements.txt requirements.txt
 COPY requirements_dev.txt requirements_dev.txt
 COPY README.md README.md
 COPY pyproject.toml pyproject.toml
-#COPY wandb_tester.py wandb_tester.py
+COPY wandb_tester.py wandb_tester.py
 
 RUN pip install -r requirements.txt --no-cache-dir --verbose
 RUN pip install . --no-deps --no-cache-dir --verbose
 
-#ENTRYPOINT ["python", "-u", "wandb_tester.py"]
-ENTRYPOINT ["python", "-u", "src/animal_classification/train.py"]
+
+#ENTRYPOINT ["python", "-u", "src/animal_classification/train.py"]
+ENTRYPOINT ["python", "-u", "wandb_tester.py"]
