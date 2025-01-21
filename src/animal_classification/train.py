@@ -9,26 +9,38 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 import numpy as np
 from model import AnimalClassificationCNN
 from torch.profiler import profile, ProfilerActivity, tensorboard_trace_handler
+from google.cloud import storage
+import tempfile
 
-# Custom Dataset to load tensors and labels
+# Custom Dataset to load tensors and labels from GCS bucket
 class AnimalDataset(Dataset):
-    def __init__(self, data_dir, transform=None):
-        self.data_dir = data_dir
+    def __init__(self, bucket_name, transform=None):
+        self.bucket_name = bucket_name
         self.transform = transform
         self.labels = {'cat': 0, 'dog': 1, 'elephant': 2, 'horse': 3, 'lion': 4}  # Label map
         
-        # Load all tensors (for each class)
+        # Initialize Google Cloud Storage client
+        self.client = storage.Client()
+        self.bucket = self.client.get_bucket(self.bucket_name)
+        
+        # List of tensors to load
         self.image_tensors = []
         self.image_labels = []
-        
+
+        # Load tensors for each class from GCS
         for class_name, label in self.labels.items():
-            class_tensor_path = os.path.join(data_dir, f"{class_name}_data.pt")
+            class_tensor_path = f"processed/train/{class_name}_data.pt"  # Path in your GCS bucket
             
-            if os.path.exists(class_tensor_path):
+            blob = self.bucket.blob(class_tensor_path)
+            
+            if blob.exists():
                 print(f"Loading tensor for class: {class_name} from {class_tensor_path}")
-                class_tensor = torch.load(class_tensor_path)
-                self.image_tensors.append(class_tensor)
-                self.image_labels.extend([label] * class_tensor.shape[0])
+                # Download the tensor file to a temporary location
+                with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+                    blob.download_to_filename(tmp_file.name)
+                    class_tensor = torch.load(tmp_file.name)
+                    self.image_tensors.append(class_tensor)
+                    self.image_labels.extend([label] * class_tensor.shape[0])
             else:
                 print(f"Error: Tensor file for class '{class_name}' not found at {class_tensor_path}")
 
@@ -38,10 +50,10 @@ class AnimalDataset(Dataset):
         
         self.image_tensors = torch.cat(self.image_tensors, dim=0)
         self.image_labels = torch.tensor(self.image_labels)
-    
+
     def __len__(self):
         return len(self.image_tensors)
-    
+
     def __getitem__(self, idx):
         image = self.image_tensors[idx]
         label = self.image_labels[idx]
@@ -66,14 +78,16 @@ def train(lr: float = 0.001, batch_size: int = 2, epochs: int = 1) -> None:
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
-    train_dir = "data/processed/train"
-    train_dataset = AnimalDataset(train_dir, transform=transform)
+    # Initialize the dataset with the GCS bucket name
+    train_bucket = "bucket_animal_classification"  # Replace with your bucket name
+    train_dataset = AnimalDataset(train_bucket, transform=transform)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
     # Instantiate the model, loss function, and optimizer
     model = AnimalClassificationCNN(num_classes=5).to(device)  # Move model to GPU
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
+    
     with profile(
         activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], 
         on_trace_ready=tensorboard_trace_handler("./log/"),
