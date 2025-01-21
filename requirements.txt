@@ -7,3 +7,4 @@ scikit_learn==1.6.1
 torch==2.5.1
 torchvision==0.20.1
 wandb==0.19.4
+
