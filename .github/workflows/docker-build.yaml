@@ -19,10 +19,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Set up Google Cloud
-        uses: google-github-actions/setup-gcloud@v2
+      - name: Auth with GCP
+        uses: google-github-actions/auth@v2
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
 
       - name: Log in to Google Artifact Registry
@@ -36,3 +35,4 @@ jobs:
       - name: Push Docker image to Artifact Registry
         run: |
           docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/train-image:latest
+europe-west1-docker.pkg.dev/animal-classification-555/animal-classification
