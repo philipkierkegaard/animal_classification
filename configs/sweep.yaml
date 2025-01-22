@@ -1,5 +1,5 @@
 program: src/animal_classification/train.py
-name: Animals_mlops
+name: Animals_mlops_test
 project: Animals_mlops # Ensure this matches your WandB project name
 entity: thousig-danmarks-tekniske-universitet-dtu  # Replace with your actual entity name
 metric:
