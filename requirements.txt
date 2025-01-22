@@ -10,3 +10,5 @@ wandb==0.19.4
 google-cloud-storage
 argparse
 pyyaml
+fastapi==0.115.6
+uvicorn==0.34.0
