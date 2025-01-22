@@ -139,14 +139,35 @@ def train(lr: float = 0.001, batch_size: int = 2, epochs: int = 1) -> None:
             "final_f1": final_f1
         })
 
-        torch.save(model.state_dict(), "models/animal_classification_model.pth")
+        # Save the model locally
+        local_model_path = "models/animal_classification_model.pth"
+        os.makedirs("models", exist_ok=True)  # Ensure the directory exists
+        torch.save(model.state_dict(), local_model_path)
+
+        # Save the model to the GCS bucket
+        gcs_model_path = "models/animal_classification_model.pth"  # Path in the bucket
+        bucket_name = "bucket_animal_classification"  # Replace with your bucket name
+
+        print(f"Uploading the model to GCS bucket {bucket_name} at {gcs_model_path}")
+        client = storage.Client()
+        bucket = client.get_bucket(bucket_name)
+        blob = bucket.blob(gcs_model_path)
+        blob.upload_from_filename(local_model_path)
+        print("Model successfully uploaded to GCS!")
+
+        # Log model artifact to W&B
         artifact = wandb.Artifact(
             name="Animals_mlops",
             type="model",
-            description="A model trained to classify animals images",
-            metadata={"accuracy": final_accuracy, "precision": final_precision, "recall": final_recall, "f1": final_f1},
+            description="A model trained to classify animal images",
+            metadata={
+                "accuracy": final_accuracy,
+                "precision": final_precision,
+                "recall": final_recall,
+                "f1": final_f1,
+            },
         )
-        artifact.add_file("models/animal_classification_model.pth")
+        artifact.add_file(local_model_path)
         run.log_artifact(artifact)
 
 if __name__ == "__main__":
