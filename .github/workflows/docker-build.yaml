@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main  # Trigger on push to main branch
+      - wandb
   pull_request:
     branches:
       - main  # Trigger on pull request to main branch
+      - wandb
 
 jobs:
   build:

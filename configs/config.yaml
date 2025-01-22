@@ -2,7 +2,8 @@ workerPoolSpecs:
   machineSpec:
     machineType: n1-highmem-2
   replicaCount: 1
-  containerSpec:
-    imageUri: "europe-west1-docker.pkg.dev/animal-classification-555/animal-classification/train-image:latest"
-    command: []
-    args: []
+containerSpec:
+  imageUri: "gcr.io/animal-classification-555/animal-classification/train-image:latest"
+  command: ["python", "src/animal_classification/train.py", "--sweep"]
+  environmentVariables:
+    WANDB_API_KEY: "6ef13821cd6974d79eeb91a1119285e45597a314"
