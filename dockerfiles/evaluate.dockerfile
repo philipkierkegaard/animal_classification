@@ -5,6 +5,9 @@ RUN apt update && \
     apt install --no-install-recommends -y build-essential gcc && \
     apt clean && rm -rf /var/lib/apt/lists/*
 
+ENV WANDB_API_KEY=6ef13821cd6974d79eeb91a1119285e45597a314
+
+
 COPY src src/
 COPY requirements.txt requirements.txt
 COPY requirements_dev.txt requirements_dev.txt
