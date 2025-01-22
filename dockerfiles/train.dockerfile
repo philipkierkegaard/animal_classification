@@ -13,8 +13,6 @@ COPY src/ src/
 COPY requirements.txt requirements.txt
 COPY requirements_dev.txt requirements_dev.txt
 COPY pyproject.toml pyproject.toml
-# Install dependencies
-RUN pip install wandb && \
 # (wandb updateted so it can run with docker run -e WANDB_API_KEY=6ef13821cd6974d79eeb91a1119285e45597a314 your-docker-image --sweep)
 COPY configs/sweep.yaml configs/sweep.yaml 
 
