@@ -9,9 +9,9 @@ parameters:
   lr:
     values: [0.001, 0.01, 0.1]
     #distribution: log_uniform
-  batch-size:
+  batch_size:
     values: [16, 32, 64]
   epochs:
     values: [1, 2, 3]
 method: random  # This specifies that you want to use random search for hyperparameters
-run_cap: 5
+run_cap: 3

@@ -11,6 +11,8 @@ from model import AnimalClassificationCNN
 from torch.profiler import profile, ProfilerActivity, tensorboard_trace_handler
 from google.cloud import storage
 import tempfile
+import argparse
+import yaml
 
 # Custom Dataset to load tensors and labels from GCS bucket
 class AnimalDataset(Dataset):
@@ -170,5 +172,34 @@ def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 1) -> None:
         artifact.add_file(local_model_path)
         run.log_artifact(artifact)
 
+def sweep_train():
+    # Logic for W&B sweep
+    with open("configs/sweep.yaml", "r") as file:
+        sweep_config = yaml.safe_load(file)
+
+    sweep_id = wandb.sweep(sweep_config, project="Animals_mlops")
+
+    def train_with_config():
+        with wandb.init():
+            config = wandb.config
+            print(f"Config keys: {list(config.keys())}")
+            lr = config.lr
+            batch_size = config.batch_size
+            epochs = config.epochs
+            # Call the main training function with these parameters
+            train(lr=lr, batch_size=batch_size, epochs=epochs)
+
+
+    # Run the sweep agent
+    wandb.agent(sweep_id, function=train_with_config)
+
+
 if __name__ == "__main__":
-    train()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--sweep", action="store_true", help="Run W&B sweep")
+    args = parser.parse_args()
+
+    if args.sweep:
+        sweep_train()
+    else:
+        train()
