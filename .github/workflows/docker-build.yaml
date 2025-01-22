@@ -3,15 +3,10 @@ name: Build and Push Docker Image to Artifact Registry
 on:
   push:
     branches:
-      - main
+      - main  # Trigger on push to main branch
   pull_request:
     branches:
-      - main
-
-env:
-  IMAGE_NAME: animal-classification/train-image
-  TAG: latest
-  REPO_URL: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}
+      - main  # Trigger on pull request to main branch
 
 jobs:
   build:
@@ -29,27 +24,14 @@ jobs:
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
 
-      - name: Configure GCP Region
+      - name: Log in to Google Artifact Registry
         run: |
-          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
-          gcloud config set compute/region ${{ secrets.GCP_REGION }}
           gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-docker-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
 
       - name: Build the Docker image
         run: |
-          docker build --cache-from=type=local,src=/tmp/.buildx-cache \
-                       --cache-to=type=local,dest=/tmp/.buildx-cache \
-                       -f dockerfiles/train.dockerfile \
-                       -t ${{ env.REPO_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} .
+          docker build -f dockerfiles/train.dockerfile -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/train-image:latest .
 
       - name: Push Docker image to Artifact Registry
         run: |
-          docker push ${{ env.REPO_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
+          docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/train-image:latest
