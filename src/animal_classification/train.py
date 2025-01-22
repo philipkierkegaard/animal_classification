@@ -155,6 +155,7 @@ def train(lr: float = 0.001, batch_size: int = 2, epochs: int = 1) -> None:
         blob.upload_from_filename(local_model_path)
         print("Model successfully uploaded to GCS!")
 
+        
         # Log model artifact to W&B
         artifact = wandb.Artifact(
             name="Animals_mlops",
