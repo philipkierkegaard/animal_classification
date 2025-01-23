@@ -105,7 +105,7 @@ def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 1) -> None:
     
     with profile(
         activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], 
-        on_trace_ready=gcs_tensorboard_trace_handler("your-gcs-bucket-name", "log"),
+        on_trace_ready=gcs_tensorboard_trace_handler(train_bucket, "log"),
         record_shapes=True,
         profile_memory=True,
         with_stack=True
