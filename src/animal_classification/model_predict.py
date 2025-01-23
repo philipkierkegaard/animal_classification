@@ -1,118 +1,79 @@
-import gradio as gr
 import torch
-import torchvision.transforms as transforms
-from PIL import Image
-from model import AnimalClassificationCNN  # Import your model
 from google.cloud import storage
 import tempfile
-import matplotlib.pyplot as plt
+from model import AnimalClassificationCNN
+from PIL import Image
+import gradio as gr
+from torchvision import transforms
 
-# Define class labels
-labels = {0: 'cat', 1: 'dog', 2: 'elephant', 3: 'horse', 4: 'lion'}
+# Define class mapping
+CLASS_MAPPING = {0: 'cat', 1: 'dog', 2: 'elephant', 3: 'horse', 4: 'lion'}
 
-# Initialize and load the model
-bucket_name = "bucket_animal_classification"
-model_blob_path = "models/animal_classification_model.pth"
-model = AnimalClassificationCNN(num_classes=len(labels))
+def download_model_from_gcs(bucket_name, model_blob_path):
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(model_blob_path)
 
-client = storage.Client()
-model_blob = client.bucket(bucket_name).blob(model_blob_path)
+    if not blob.exists():
+        raise FileNotFoundError(f"Model weights not found at gs://{bucket_name}/{model_blob_path}")
 
-if model_blob.exists():
     with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-        model_blob.download_to_filename(temp_file.name)
-        state_dict = torch.load(temp_file.name, map_location=torch.device('cpu'))
-        print(f"Loaded state dict keys: {list(state_dict.keys())}")
-        try:
-            model.load_state_dict(state_dict)
-            print("Model weights loaded successfully.")
-        except Exception as e:
-            print(f"Error loading model weights: {e}")
-else:
-    raise FileNotFoundError("Model weights not found.")
+        blob.download_to_filename(temp_file.name)
+        return temp_file.name
 
-model.eval()
+def load_model(bucket_name, model_blob_path):
+    model_file_path = download_model_from_gcs(bucket_name, model_blob_path)
+    model = AnimalClassificationCNN(num_classes=len(CLASS_MAPPING))
+    model.load_state_dict(torch.load(model_file_path, map_location=torch.device('cpu')))
+    model.eval()
+    return model
 
-# Function to visualize preprocessing
-def visualize_preprocessing(image, preprocessed_image):
-    plt.figure(figsize=(8, 4))
-    plt.subplot(1, 2, 1)
-    plt.imshow(image)
-    plt.title("Original Image")
-    plt.axis("off")
+def preprocess_image(image):
+    preprocess = transforms.Compose([
+        transforms.Resize((128, 128)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+    return preprocess(image)
 
-    inv_normalize = transforms.Normalize(
-        mean=[-m/s for m, s in zip([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])],
-        std=[1/s for s in [0.229, 0.224, 0.225]]
-    )
-    denorm_image = inv_normalize(preprocessed_image.squeeze())
-    plt.subplot(1, 2, 2)
-    plt.imshow(denorm_image.permute(1, 2, 0).numpy())
-    plt.title("Preprocessed Image")
-    plt.axis("off")
-    plt.show()
-
-# Prediction function
-def predict(image):
-    try:
-        if not isinstance(image, Image.Image):
-            return "Error: Please upload a valid image."
-
-        # Define preprocessing
-        preprocess = transforms.Compose([
-            transforms.Resize((128, 128)),  # Match the size used during training
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-        ])
-        preprocessed_image = preprocess(image).unsqueeze(0)  # Add batch dimension
-
-        # Visualize preprocessing
-        visualize_preprocessing(image, preprocessed_image[0])
-
-        # Perform prediction
-        with torch.no_grad():
-            outputs = model(preprocessed_image)
-
-            # Debugging: Check the raw logits
-            print(f"Raw logits: {outputs}")
-
-            probabilities = torch.softmax(outputs, dim=1)
-
-            # Debugging: Check the softmax probabilities
-            print(f"Softmax probabilities: {probabilities}")
-
-            predictions = {labels[i]: float(probabilities[0, i]) for i in range(len(labels))}
-            sorted_preds = sorted(predictions.items(), key=lambda x: x[1], reverse=True)
-
-            # Debugging: Check the final predictions
-            print(f"Sorted predictions: {sorted_preds}")
-
-            # Return formatted results
-            return "\n".join([f"{label}: {confidence:.2%}" for label, confidence in sorted_preds])
-
-    except Exception as e:
-        return f"Error: {str(e)}"
-
-# Test the model with a dummy input
-def test_model():
-    print("Testing model with dummy input...")
-    dummy_input = torch.randn(1, 3, 128, 128)  # Batch size of 1, RGB image, size 128x128
+def predict_image(image, model, class_mapping):
     with torch.no_grad():
-        test_output = model(dummy_input)
-        print(f"Test output logits: {test_output}")
-        print(f"Softmax probabilities: {torch.softmax(test_output, dim=1)}")
+        outputs = model(image.unsqueeze(0))  # Add batch dimension
+        probabilities = torch.softmax(outputs, dim=1)[0]
+        predicted_class = class_mapping[torch.argmax(probabilities).item()]
+        class_probabilities = {class_mapping[i]: float(probabilities[i]) * 100 for i in range(len(class_mapping))}
+        return predicted_class, class_probabilities
 
-# Run the test to verify the model works correctly
-test_model()
+# Load the model from Google Cloud Storage
+bucket_name = "bucket_animal_classification"  # Adjust the bucket name as needed
+model_blob_path = "models/animal_classification_model.pth"  # Adjust the model path in GCS as needed
+model = load_model(bucket_name, model_blob_path)
 
-# Gradio interface
-interface = gr.Interface(
-    fn=predict,
-    inputs=gr.Image(type="pil"),
-    outputs="text",
-    title="Animal Classifier",
-    description="Upload an animal image to classify it (e.g., cat, dog, elephant, horse, lion).",
-)
+# Define the function Gradio will use
+def gradio_interface(image):
+    """
+    Function for Gradio to handle an image input and return a prediction.
+    """
+    try:
+        # Directly preprocess the PIL image
+        processed_image = preprocess_image(image)
 
-if __name__ == "__main__":
-    interface.launch(share=False)
+        # Predict using the loaded model
+        predicted_class, class_probabilities = predict_image(processed_image, model, CLASS_MAPPING)
+
+        # Format the output
+        result = f"Predicted Class: {predicted_class}\n\nClass Probabilities:\n"
+        result += "\n".join([f"{cls}: {prob:.2f}%" for cls, prob in class_probabilities.items()])
+
+        return result
+    except Exception as e:
+        return f"Error during prediction: {str(e)}"
+
+# Set up Gradio interface
+gr.Interface(
+    fn=gradio_interface,  # Your prediction function
+    inputs=gr.Image(type="pil"),  # Image input
+    outputs="text",  # Text output
+    title="Animal Image Classification",
+    description="Upload an animal image, and the model will classify it into one of the animal categories."
+).launch(server_port=8080, server_name="0.0.0.0")
