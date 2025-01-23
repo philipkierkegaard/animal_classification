@@ -67,6 +67,19 @@ def preprocess_image(image):
     ])
     return preprocess(image)
 
+def gcs_tensorboard_trace_handler(bucket_name, log_dir):
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    
+    def handler(prof):
+        log_path = os.path.join(log_dir, f"trace_{prof.step_num}.pt.trace.json")
+        prof.export_chrome_trace(log_path)
+        blob = bucket.blob(log_path)
+        blob.upload_from_filename(log_path)
+        print(f"Uploaded profiling data to gs://{bucket_name}/{log_path}")
+    
+    return handler
+
 def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 1) -> None:
     print("Training day and night")
     print(f"{lr=}, {batch_size=}, {epochs=}")
@@ -92,7 +105,7 @@ def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 1) -> None:
     
     with profile(
         activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], 
-        on_trace_ready=tensorboard_trace_handler("./log/"),
+        on_trace_ready=gcs_tensorboard_trace_handler("your-gcs-bucket-name", "log"),
         record_shapes=True,
         profile_memory=True,
         with_stack=True
