@@ -4,15 +4,11 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
-import wandb
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
-import numpy as np
 from model import AnimalClassificationCNN
 from torch.profiler import profile, ProfilerActivity, tensorboard_trace_handler
 from google.cloud import storage
 import tempfile
-import argparse
-import yaml
 
 # Custom Dataset to load tensors and labels from GCS bucket
 class AnimalDataset(Dataset):
@@ -66,10 +62,6 @@ class AnimalDataset(Dataset):
 def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 1) -> None:
     print("Training day and night")
     print(f"{lr=}, {batch_size=}, {epochs=}")
-    run = wandb.init(
-        project="Animals_mlops",
-        config={"lr": lr, "batch_size": batch_size, "epochs": epochs},
-    )
 
     # Check for GPU
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -114,7 +106,7 @@ def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 1) -> None:
                 prof.step()
 
                 accuracy = (outputs.argmax(dim=1) == labels).float().mean().item()
-                wandb.log({"train_loss": loss.item(), "train_accuracy": accuracy})
+                print(f"Batch {i+1}/{len(train_loader)} - Loss: {loss.item():.4f}, Accuracy: {accuracy:.4f}")
 
                 preds.append(outputs.detach().cpu())
                 targets.append(labels.detach().cpu())
@@ -134,12 +126,10 @@ def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 1) -> None:
         final_recall = recall_score(targets, preds.argmax(dim=1), average="weighted")
         final_f1 = f1_score(targets, preds.argmax(dim=1), average="weighted")
 
-        wandb.log({
-            "final_accuracy": final_accuracy,
-            "final_precision": final_precision,
-            "final_recall": final_recall,
-            "final_f1": final_f1
-        })
+        print(f"Final Accuracy: {final_accuracy:.4f}")
+        print(f"Final Precision: {final_precision:.4f}")
+        print(f"Final Recall: {final_recall:.4f}")
+        print(f"Final F1 Score: {final_f1:.4f}")
 
         # Save the model locally
         local_model_path = "models/animal_classification_model.pth"
@@ -157,49 +147,5 @@ def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 1) -> None:
         blob.upload_from_filename(local_model_path)
         print("Model successfully uploaded to GCS!")
 
-        # Log model artifact to W&B
-        artifact = wandb.Artifact(
-            name="Animals_mlops",
-            type="model",
-            description="A model trained to classify animal images",
-            metadata={
-                "accuracy": final_accuracy,
-                "precision": final_precision,
-                "recall": final_recall,
-                "f1": final_f1,
-            },
-        )
-        artifact.add_file(local_model_path)
-        run.log_artifact(artifact)
-
-def sweep_train():
-    # Logic for W&B sweep
-    with open("configs/sweep.yaml", "r") as file:
-        sweep_config = yaml.safe_load(file)
-
-    sweep_id = wandb.sweep(sweep_config, project="Animals_mlops")
-
-    def train_with_config():
-        with wandb.init():
-            config = wandb.config
-            print(f"Config keys: {list(config.keys())}")
-            lr = config.lr
-            batch_size = config.batch_size
-            epochs = config.epochs
-            # Call the main training function with these parameters
-            train(lr=lr, batch_size=batch_size, epochs=epochs)
-
-
-    # Run the sweep agent
-    wandb.agent(sweep_id, function=train_with_config)
-
-
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--sweep", action="store_true", help="Run W&B sweep")
-    args = parser.parse_args()
-
-    if args.sweep:
-        sweep_train()
-    else:
-        train()
+    train()
