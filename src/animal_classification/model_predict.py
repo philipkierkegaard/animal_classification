@@ -5,7 +5,7 @@ from model import AnimalClassificationCNN
 from PIL import Image
 import gradio as gr
 from torchvision import transforms
-
+#gradio_interface(image)
 # Define class mapping
 CLASS_MAPPING = {0: 'cat', 1: 'dog', 2: 'elephant', 3: 'horse', 4: 'lion'}
 
