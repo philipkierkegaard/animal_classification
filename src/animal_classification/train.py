@@ -6,7 +6,7 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from model import AnimalClassificationCNN
-from torch.profiler import profile, ProfilerActivity, tensorboard_trace_handler
+from torch.profiler import profile, ProfilerActivity
 from google.cloud import storage
 import tempfile
 
@@ -73,6 +73,9 @@ def gcs_tensorboard_trace_handler(bucket_name, log_dir):
     
     def handler(prof):
         log_path = os.path.join(log_dir, f"trace_{prof.step_num}.pt.trace.json")
+        if not os.path.exists(log_path):
+            print(f"Error: Log file {log_path} does not exist.")
+            return
         prof.export_chrome_trace(log_path)
         blob = bucket.blob(log_path)
         blob.upload_from_filename(log_path)
@@ -103,9 +106,13 @@ def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 1) -> None:
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
     
+    # Ensure the log directory exists
+    log_dir = "log"
+    os.makedirs(log_dir, exist_ok=True)
+
     with profile(
         activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], 
-        on_trace_ready=gcs_tensorboard_trace_handler(train_bucket, "log"),
+        on_trace_ready=gcs_tensorboard_trace_handler("your-gcs-bucket-name", log_dir),
         record_shapes=True,
         profile_memory=True,
         with_stack=True

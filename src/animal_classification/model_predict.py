@@ -5,7 +5,7 @@ from model import AnimalClassificationCNN
 from PIL import Image
 import gradio as gr
 from torchvision import transforms
-#gradio_interface(image)
+
 # Define class mapping
 CLASS_MAPPING = {0: 'cat', 1: 'dog', 2: 'elephant', 3: 'horse', 4: 'lion'}
 
@@ -36,44 +36,17 @@ def preprocess_image(image):
     ])
     return preprocess(image)
 
-def predict_image(image, model, class_mapping):
+def predict(image):
+    model = load_model("bucket_animal_classification", "models/animal_classification_model.pth")
+    image = preprocess_image(image)
+    image = image.unsqueeze(0)  # Add batch dimension
     with torch.no_grad():
-        outputs = model(image.unsqueeze(0))  # Add batch dimension
-        probabilities = torch.softmax(outputs, dim=1)[0]
-        predicted_class = class_mapping[torch.argmax(probabilities).item()]
-        class_probabilities = {class_mapping[i]: float(probabilities[i]) * 100 for i in range(len(class_mapping))}
-        return predicted_class, class_probabilities
+        outputs = model(image)
+    _, predicted = torch.max(outputs, 1)
+    return CLASS_MAPPING[predicted.item()]
 
-# Load the model from Google Cloud Storage
-bucket_name = "bucket_animal_classification"  # Adjust the bucket name as needed
-model_blob_path = "models/animal_classification_model.pth"  # Adjust the model path in GCS as needed
-model = load_model(bucket_name, model_blob_path)
+# Define Gradio interface
+iface = gr.Interface(fn=predict, inputs="image", outputs="text")
 
-# Define the function Gradio will use
-def gradio_interface(image):
-    """
-    Function for Gradio to handle an image input and return a prediction.
-    """
-    try:
-        # Directly preprocess the PIL image
-        processed_image = preprocess_image(image)
-
-        # Predict using the loaded model
-        predicted_class, class_probabilities = predict_image(processed_image, model, CLASS_MAPPING)
-
-        # Format the output
-        result = f"Predicted Class: {predicted_class}\n\nClass Probabilities:\n"
-        result += "\n".join([f"{cls}: {prob:.2f}%" for cls, prob in class_probabilities.items()])
-
-        return result
-    except Exception as e:
-        return f"Error during prediction: {str(e)}"
-
-# Set up Gradio interface
-gr.Interface(
-    fn=gradio_interface,  # Your prediction function
-    inputs=gr.Image(type="pil"),  # Image input
-    outputs="text",  # Text output
-    title="Animal Image Classification",
-    description="Upload an animal image, and the model will classify it into one of the animal categories."
-).launch(server_port=8080, server_name="0.0.0.0")
+if __name__ == "__main__":
+    iface.launch(server_name="0.0.0.0", server_port=7860)
