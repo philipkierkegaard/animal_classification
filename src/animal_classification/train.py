@@ -63,7 +63,7 @@ class AnimalDataset(Dataset):
             image = self.transform(image)
         return image, label
 
-def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 1) -> None:
+def train(lr: float = 0.001, batch_size: int = 64, epochs: int = 1) -> None:
     print("Training day and night")
     print(f"{lr=}, {batch_size=}, {epochs=}")
     run = wandb.init(
