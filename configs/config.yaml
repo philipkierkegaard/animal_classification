@@ -3,7 +3,7 @@ workerPoolSpecs:
       machineType: n1-highmem-2
     replicaCount: 1
     containerSpec:
-      imageUri: "europe-west1-docker.pkg.dev/animal-classification-555/animal-classification/train-image@sha256:a1a7a5c02b692a24f77cddd95e28abc934d70b331213fd7e4bb618bde5b52792"
+      imageUri: "europe-west1-docker.pkg.dev/animal-classification-555/animal-classification/train-image@sha256:6ebee5fd3913bc58cf7f7a3e4807e4d8474d09bd0fac59ead08f782997630d9a"
       command: ["python", "src/animal_classification/train.py", "--sweep"]
       env:
         - name: WANDB_API_KEY
