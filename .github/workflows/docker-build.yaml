@@ -41,3 +41,7 @@ jobs:
           # Build and push the evaluation image
           docker build -f dockerfiles/evaluate.dockerfile -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/evaluate-image:latest .
           docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/evaluate-image:latest
+
+          # Build and push API image 
+          docker build -f dockerfiles/api.dockerfile -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/api-image:latest .
+          docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/api-image:latest
