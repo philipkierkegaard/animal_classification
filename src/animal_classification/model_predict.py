@@ -5,6 +5,7 @@ from model import AnimalClassificationCNN
 from PIL import Image
 import gradio as gr
 from torchvision import transforms
+import numpy as np
 
 # Define class mapping
 CLASS_MAPPING = {0: 'cat', 1: 'dog', 2: 'elephant', 3: 'horse', 4: 'lion'}
@@ -38,12 +39,21 @@ def preprocess_image(image):
 
 def predict(image):
     model = load_model("bucket_animal_classification", "models/animal_classification_model.pth")
+    
+    # If the input image is a NumPy array, convert it to a PIL.Image
+    if isinstance(image, np.ndarray):
+        image = Image.fromarray(image)
+
+    # Preprocess the image
     image = preprocess_image(image)
     image = image.unsqueeze(0)  # Add batch dimension
+
+    # Run the model
     with torch.no_grad():
         outputs = model(image)
     _, predicted = torch.max(outputs, 1)
     return CLASS_MAPPING[predicted.item()]
+
 
 # Define Gradio interface
 iface = gr.Interface(fn=predict, inputs="image", outputs="text")
