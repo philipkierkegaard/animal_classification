@@ -32,10 +32,12 @@ jobs:
         run: |
           gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
 
-      - name: Build the Docker image
+      - name: Build the Docker images
         run: |
+          # Build and push the training image
           docker build -f dockerfiles/train.dockerfile -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/train-image:latest .
-
-      - name: Push Docker image to Artifact Registry
-        run: |
           docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/train-image:latest
+          
+          # Build and push the evaluation image
+          docker build -f dockerfiles/evaluate.dockerfile -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/evaluate-image:latest .
+          docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/animal-classification/evaluate-image:latest
