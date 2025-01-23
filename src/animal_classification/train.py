@@ -59,6 +59,14 @@ class AnimalDataset(Dataset):
             image = self.transform(image)
         return image, label
 
+def preprocess_image(image):
+    preprocess = transforms.Compose([
+        transforms.Resize((128, 128)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+    return preprocess(image)
+
 def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 1) -> None:
     print("Training day and night")
     print(f"{lr=}, {batch_size=}, {epochs=}")
