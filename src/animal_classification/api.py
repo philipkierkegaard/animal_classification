@@ -5,6 +5,7 @@ import torch
 from PIL import Image
 import io
 import os
+from src.animal_classification.model import AnimalClassificationCNN
 
 # Initialize FastAPI
 app = FastAPI()
@@ -43,20 +44,29 @@ def download_model():
 
 # Load the model
 model_path = download_model()
-model = torch.load(model_path, map_location=torch.device("cpu"))
+
+# Initialize the model
+model = AnimalClassificationCNN(num_classes=len(class_names))
+model.load_state_dict(torch.load(model_path, map_location=torch.device("cpu")))
 model.eval()
 
+@app.post("/predict")
 @app.post("/predict")
 async def predict(file: UploadFile):
     try:
         # Read and preprocess the image
         image_bytes = await file.read()
         image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-        input_tensor = transform(image).unsqueeze(0)
+        input_tensor = transform(image).unsqueeze(0)  # Add batch dimension
+
+        # Debugging: Print the input tensor shape
+        print(f"Input tensor shape: {input_tensor.shape}")  # Expected: [1, 3, 224, 224]
 
         # Run the model
         with torch.no_grad():
             outputs = model(input_tensor)
+            print(f"Model output shape: {outputs.shape}")  # Expected: [1, num_classes]
+
             _, predicted_idx = torch.max(outputs, 1)
 
         # Get the predicted class

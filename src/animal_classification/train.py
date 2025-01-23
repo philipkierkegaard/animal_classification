@@ -75,10 +75,12 @@ def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 1) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    # Define the transformation pipeline
     transform = transforms.Compose([
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
+    transforms.Resize((224, 224)),  # Ensure all images are resized to the model input size
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+])
+
 
     # Initialize the dataset with the GCS bucket name
     train_bucket = "bucket_animal_classification"  # Replace with your bucket name
