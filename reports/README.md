@@ -660,7 +660,7 @@ Yeah we implemented the frontend via gradio: https://gradio-api-132806470705.eur
 > Answer:
 
 --- question 29 fill here ---
-![pipeline](figures/pipeline.png)
+![pipeline](figures/Pipeline.png)
 
 The starting point of the diagram is our local setup, where we develop and test our code. We also use Weights & Biases (W&B) to track our experiments, including hyperparameter sweeps and training metrics, which help us monitor and improve our model performance.
 
