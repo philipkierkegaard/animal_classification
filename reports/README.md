@@ -152,6 +152,7 @@ Its practical features, such as drag-and-drop widgets, automatic hosting, and ea
 
 Using Gradio not only saved us time but also allowed us to complete the project more efficiently and deliver a polished result. It was an excellent fit for our needs, and we’d highly recommend it to anyone looking to add interactivity to their projects quickly and easily.
 https://gradio-api-132806470705.europe-west1.run.app/
+![gradio](figures/Gradio.png)
 
 
 ## Coding environment
@@ -660,7 +661,7 @@ Yeah we implemented the frontend via gradio: https://gradio-api-132806470705.eur
 > Answer:
 
 --- question 29 fill here ---
-![pipeline](figures/Pipeline.png)
+![pipeline](figures/Pipeline.jpg)
 
 The starting point of the diagram is our local setup, where we develop and test our code. We also use Weights & Biases (W&B) to track our experiments, including hyperparameter sweeps and training metrics, which help us monitor and improve our model performance.
 
