@@ -125,12 +125,12 @@ will check the repositories and the code to verify your answers.
 >
 > Example:
 >
-> *s234873, s234825, s234811*
+> 
 >
 > Answer:
 
 --- question 2 fill here ---
-
+s234873, s234825, s234811
 ### Question 3
 > **A requirement to the project is that you include a third-party package not covered in the course. What framework**
 > **did you choose to work with and did it help you complete the project?**
@@ -146,7 +146,11 @@ will check the repositories and the code to verify your answers.
 
 --- question 3 fill here ---
 
-We chose Gradio for our project because it’s intuitive and easy to use. One of our team members had some prior experience with it, which made getting started even smoother. Gradio simplified the process of creating an interactive interface, allowing us to focus on the core functionality without worrying about the details of UI design. It was practical, efficient, and helped us complete the project much faster. We’d recommend it to anyone looking for a straightforward way to add interactivity to their work.
+We chose Gradio as our third-party framework because it’s intuitive, easy to use, and perfect for building interactive interfaces. One of our team members had prior experience with it, which helped us get started quickly and confidently. Gradio allowed us to create an engaging user interface for our project without needing to dive into complex UI design or spend extra time on front-end development.
+
+Its practical features, such as drag-and-drop widgets, automatic hosting, and easy customization, simplified the process significantly. We were able to focus entirely on the core functionality of the project while Gradio took care of the interactive aspects.
+
+Using Gradio not only saved us time but also allowed us to complete the project more efficiently and deliver a polished result. It was an excellent fit for our needs, and we’d highly recommend it to anyone looking to add interactivity to their projects quickly and easily.
 
 
 ## Coding environment
@@ -169,7 +173,10 @@ We chose Gradio for our project because it’s intuitive and easy to use. One of
 >
 --- question 4 fill here ---
 
-We created a conda environment to isolate our dependencies from other projects, where we installed the nececcary dependencies as we went along and faced new challenges. We then regularly updated our requirements.txt and requirements_dev.txt with the command pipreqs --force which would read the project and check which dependencies. When a member then needed to be up to date with the requirements, we could run pip install -r requirements.txt.
+
+We managed dependencies in our project by creating a conda environment to isolate them from other projects. As we encountered new challenges, we installed the necessary packages within this environment to ensure everything was organized and consistent. To keep track of these dependencies, we regularly updated requirements.txt and requirements_dev.txt using the command pipreqs --force, which scans the project and automatically lists all the required dependencies.
+
+For a new team member to set up the exact same environment, they would first create a conda environment and activate it. Then, they could simply run pip install -r requirements.txt to install all the necessary packages for the project. This approach ensured that everyone worked in the same environment and minimized potential issues with missing or incompatible dependencies. It was a straightforward process that kept our project’s setup clear and easy to replicate.
 
 
 ### Question 5
