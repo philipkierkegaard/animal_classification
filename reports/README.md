@@ -576,6 +576,17 @@ Yeah we implemented the frontend via gradio: https://gradio-api-132806470705.eur
 > Answer:
 
 --- question 29 fill here ---
+The starting point of the diagram is our local setup, where we develop and test our code. We also use Weights & Biases (W&B) to track our experiments, including hyperparameter sweeps and training metrics, which help us monitor and improve our model performance.
+
+Once the code is ready, we commit and push changes to GitHub, which serves as our version control system. This triggers GitHub Actions, our continuous integration (CI) pipeline. The pipeline performs several automated checks to maintain code quality:
+
+Run tests: Ensures that the core functionality of the project works as intended.
+CodeCov: Measures the test coverage across the codebase to identify untested areas.
+while we build a docker with github actions, which builds a new Docker image containing the latest version of the code and all required dependencies. The image is then stored in the GCP Container Registry, where it is ready for deployment or further use.
+
+Users can either clone the source code from GitHub or pull the latest Docker image from the Container Registry to ensure they are running the newest version of the project.
+
+This setup ensures an efficient workflow by automating testing, building, and deployment while maintaining a clear and reproducible development pipeline.
 
 ### Question 30
 
