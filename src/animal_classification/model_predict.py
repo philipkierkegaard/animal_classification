@@ -1,7 +1,7 @@
 import torch
 from google.cloud import storage
 import tempfile
-from model import AnimalClassificationCNN
+from src.animal_classification.model import AnimalClassificationCNN
 from PIL import Image
 import gradio as gr
 from torchvision import transforms
