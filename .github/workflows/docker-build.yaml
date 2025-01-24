@@ -4,13 +4,9 @@ on:
   push:
     branches:
       - main  # Trigger on push to main branch
-      - wandb
-      - gradio_branch
   pull_request:
     branches:
       - main  # Trigger on pull request to main branch
-      - wandb
-      - gradio_branch
 
 jobs:
   build:
