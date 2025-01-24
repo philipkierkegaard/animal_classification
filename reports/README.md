@@ -1,4 +1,4 @@
-# Exam template for 02476 Machine Learning Operations
+ # Exam template for 02476 Machine Learning Operations
 
 This is the report template for the exam. Please only remove the text formatted as with three dashes in front and behind
 like:
@@ -254,7 +254,8 @@ We have written eight tests in total. These cover the important parts of the app
 
 --- question 8 fill here ---
 
-Our total code coverage was 43% and tested some important aspects of our model. Some parts of our code was fairly well covered like the training and the model, while some had little or no coverage like data and evaluate. Even if our co 
+Our total code coverage was 43% and tested some important aspects of our model. Some parts of our code was fairly well covered like the training and the model, while some had little or no coverage like data and evaluate. Even if our coverage was 100%, this would not mean that there aren't any errors in our code, it would just mean that every line of code was executed during the testing.
+
 
 ### Question 9
 
@@ -271,6 +272,12 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 
 --- question 9 fill here ---
 
+In our project, we set up a workflow that automatically ran tests, built the project, and pushed updates to the cloud whenever we pulled or pushed changes. This made it easier to catch errors early and ensure the latest changes were always reflected in the cloud.
+
+While we mainly worked on the main branch, using branches could improve our workflow even more. For example, if someone wants to make a change, they could create a new branch for it, test their changes locally, and only merge it into the main branch once everything works. This keeps the main branch stable and makes it easier to work on different features or fixes at the same time.
+
+
+
 ### Question 10
 
 > **Did you use DVC for managing data in your project? If yes, then how did it improve your project to have version**
@@ -285,6 +292,10 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 > Answer:
 
 --- question 10 fill here ---
+
+
+We didn’t use DVC in our project because we relied on Google Cloud Storage to manage and store our data. We could imagine DVC being useful when working with large datasets that frequently change or need to be tracked alongside code versions. For example, in a collaborative project where multiple team members experiment with different data versions, DVC ensures consistency, reproducibility, and easy rollback to previous data states directly linked to the codebase.
+
 
 ### Question 11
 
@@ -302,6 +313,12 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 > Answer:
 
 --- question 11 fill here ---
+
+Our CI setup includes two workflows: tests and docker-build. The tests workflow runs unit tests with pytest whenever changes are pushed to or pulled from the main branch. This makes sure all changes are tested and working before being merged. It runs on Python 3.11 and Ubuntu.
+The docker-build workflow builds and pushes Docker images (for training, evaluation, and API) to Google Artifact Registry. It only triggers on pushes or pull requests to the main branch, so we only update images when the code is stable and tested. This keeps our deployment process clean and avoids unnecessary builds.
+We’re not using caching right now, but adding it in the future could speed things up, especially for dependency installations. While we’re currently testing on a single OS and Python version, our setup does a good job of automating tests and deployments for the main branch. You can our docker-build workflow here: https://github.com/philipkierkegaard/animal_classification/blob/main/.github/workflows/docker-build.yaml
+
+
 
 ## Running code and tracking experiments
 
@@ -322,6 +339,10 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 
 --- question 12 fill here ---
 
+We configured our experiments using YAML files (config.yaml and evaluate-config.yaml). These files defined key settings such as the machine type, the number of replicas, and the container images used for training and evaluation. Since we didn’t allow for dynamic arguments, all parameters were pre-defined in the application or hardcoded in the configuration files. This approach kept the setup simple and ensured consistency, but any changes to the experiment required modifying the configuration directly.
+
+
+
 ### Question 13
 
 > **Reproducibility of experiments are important. Related to the last question, how did you secure that no information**
@@ -336,6 +357,10 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 > Answer:
 
 --- question 13 fill here ---
+
+To ensure our experiments are reproducible, we relied on tools like Docker and Google Cloud. Docker provided a consistent runtime environment by standardizing dependencies and configurations, while Google Cloud centralized our data and ensured that we always used the correct datasets and resources. With Google Cloud, we could define machine types, track outputs, and automate workflows, making it easy to rerun experiments and reproduce results. Together, these tools ensured no critical information was lost and allowed us to maintain consistency across all runs.
+
+
 
 ### Question 14
 
@@ -369,6 +394,12 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 
 --- question 15 fill here ---
 
+For our project, we developed Docker images for training, evaluation, and API deployment. Each image was defined in its own Dockerfile, specifying dependencies, configurations, and entry points. For example, our training image automatically runs the train.py script. You can find the Dockerfile [here](insert link).
+We ran our training experiments using a simple command like:
+docker run --name experiment1 train:latest
+This setup ensured all parameters were predefined in the code or configuration files, which kept our process consistent and simple. While this approach worked well, allowing for dynamic arguments (e.g., docker run trainer:latest --lr 1e-3 --batch_size 64) could have made experiments more flexible. It would allow quick adjustments and automation for tasks like hyperparameter sweeps, making workflows more adaptable in future projects.
+
+
 ### Question 16
 
 > **When running into bugs while trying to run your experiments, how did you perform debugging? Additionally, did you**
@@ -383,6 +414,12 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 > Answer:
 
 --- question 16 fill here ---
+
+When we encountered bugs during our experiments, we relied on simple but effective debugging methods, primarily using print statements. By adding print statements at key points in the code, we were able to trace the flow of execution, inspect variable values, and identify where things went wrong. This approach was straightforward and worked well for most issues we faced.
+We didn’t use any sophisticated debugging tools or techniques like profilers. While profiling could have been useful for optimizing performance or identifying bottlenecks, we focused more on ensuring our code functioned correctly rather than perfecting its efficiency. In the future, incorporating tools like cProfile or torch.profiler could help us better understand performance and further improve our experiments.
+
+
+
 
 ## Working in the cloud
 
@@ -401,6 +438,9 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 
 --- question 17 fill here ---
 
+We used four key Google Cloud services in our project: Google Cloud Storage (GCS): GCS was used to store datasets, configuration files, and trained models. It provided a centralized and reliable storage solution, ensuring consistency and easy access throughout our workflow. Google Artifact Registry: We stored our Docker images for training, evaluation, and API deployment here. This allowed us to manage different versions of our containerized applications and ensured consistent environments for all stages of the project. Google AI Platform (or Vertex AI): AI Platform was used to run our training and evaluation jobs on scalable cloud infrastructure. We specified machine types (e.g., n1-highmem-8) to ensure sufficient resources for efficient execution. API Docker Deployment: The Dockerized API, also stored in Artifact Registry, allowed us to serve predictions and interact with our model in a production-ready environment. This streamlined the process of deploying the API to Google Cloud.
+
+
 ### Question 18
 
 > **The backbone of GCP is the Compute engine. Explained how you made use of this service and what type of VMs**
@@ -415,6 +455,9 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 > Answer:
 
 --- question 18 fill here ---
+
+We used Vertex AI to run our training and evaluation jobs, which works on top of Google Compute Engine. By choosing machine types like n1-highmem-8, we made sure we had enough memory and processing power for our experiments to run smoothly. Vertex AI made things easier by handling the setup of virtual machines for us, so we didn’t have to worry about provisioning or maintaining them. This setup let us focus on running our jobs while still having the flexibility to choose the right hardware for the task.
+
 
 ### Question 19
 
@@ -458,7 +501,8 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 
 --- question 22 fill here ---
 
-
+We managed to train our model in the cloud using Vertex AI. The training process was set up with Dockerized containers, which included all the necessary dependencies and the training script. These containers were executed on Vertex AI with machine types like n1-highmem-8, providing sufficient memory and computational resources.
+The training data was stored in a Google Cloud Storage bucket and accessed directly during the training. After the model was trained, it was saved locally and also uploaded back to the cloud for storage and further use. Using Vertex AI simplified the process by handling the infrastructure, ensuring scalability and reproducibility without requiring manual setup or management of virtual machines.
 
 
 ## Deployment
@@ -478,6 +522,11 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 
 --- question 23 fill here ---
 
+We did manage to write an API for our model. Instead of using a traditional framework like FastAPI, we used Gradio to create an interactive interface. Gradio made it simple to set up a front end where users could upload images and get predictions from the model in real time.
+The Gradio app served as our API, handling requests and running the model to provide predictions. Using Gradio made the process much faster and more user-friendly, as we didn’t need to write a lot of boilerplate code to get the API up and running. It was a straightforward and effective solution for our use case.
+
+
+
 ### Question 24
 
 > **Did you manage to deploy your API, either in locally or cloud? If not, describe why. If yes, describe how and**
@@ -493,6 +542,11 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 > Answer:
 
 --- question 24 fill here ---
+
+We deployed our API in the cloud. The model was wrapped into a Gradio application, which we containerized using Docker. Once the container was ready, we deployed it to Google Cloud Run, making it publicly accessible.
+To invoke the service, users simply access the Gradio interface through the provided URL in their browser. The interface allows them to upload an image, and the model processes the input to return a prediction in real time. This setup made it easy to deploy and interact with the API without requiring additional tools or configurations from the user's side. It was a simple and effective way to make our model available to others.
+
+
 
 ### Question 25
 
