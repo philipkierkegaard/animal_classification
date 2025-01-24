@@ -48,7 +48,7 @@ will check the repositories and the code to verify your answers.
 
 ### Week 1
 
-* [√] Create a git repository (M5)
+* [ ] Create a git repository (M5)
 * [ ] Make sure that all team members have write access to the GitHub repository (M5)
 * [ ] Create a dedicated environment for you project to keep track of your packages (M2)
 * [ ] Create the initial file structure using cookiecutter with an appropriate template (M6)
