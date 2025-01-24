@@ -109,7 +109,7 @@ will check the repositories and the code to verify your answers.
 * [ ] Revisit your initial project description. Did the project turn out as you wanted?
 * [ ] Create an architectural diagram over your MLOps pipeline
 * [ ] Make sure all group members have an understanding about all parts of the project
-* [ ] Uploaded all your code to GitHub
+* [x] Uploaded all your code to GitHub
 
 ## Group information
 
@@ -151,6 +151,7 @@ We chose Gradio as our third-party framework because it’s intuitive, easy to u
 Its practical features, such as drag-and-drop widgets, automatic hosting, and easy customization, simplified the process significantly. We were able to focus entirely on the core functionality of the project while Gradio took care of the interactive aspects.
 
 Using Gradio not only saved us time but also allowed us to complete the project more efficiently and deliver a polished result. It was an excellent fit for our needs, and we’d highly recommend it to anyone looking to add interactivity to their projects quickly and easily.
+https://gradio-api-132806470705.europe-west1.run.app/
 
 
 ## Coding environment
@@ -457,6 +458,9 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 
 --- question 22 fill here ---
 
+
+
+
 ## Deployment
 
 ### Question 23
@@ -554,6 +558,7 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 > Answer:
 
 --- question 28 fill here ---
+Yeah we implemented the frontend via gradio: https://gradio-api-132806470705.europe-west1.run.app/
 
 ### Question 29
 
@@ -585,6 +590,7 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 > Answer:
 
 --- question 30 fill here ---
+The biggest challenges in the project was to get everything to work in google cloud, we had a lot of problems with getting the wandb, profiling, training and more to work via the cloud and with having the data stored in the bucket.
 
 ### Question 31
 
@@ -603,3 +609,8 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 > Answer:
 
 --- question 31 fill here ---
+All members contributed to most of the code because we were working together at dtu for all the project days. So we talked througt most of the project about the implementations of the different applications
+Student s234811 was the one most in charge of developing wandb and gradio*
+Student s234873 was the one most in charge of developing the github actions and docker building
+Student s234825 was the one most in charge of cloud training and cloud bucket
+We have used ChatGPT to help debug our code. Additionally, we used ChatGPT to help write and understand some of our code and to implement specific parts fx so it worked in google cloud.
