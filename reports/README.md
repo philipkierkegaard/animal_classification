@@ -48,42 +48,42 @@ will check the repositories and the code to verify your answers.
 
 ### Week 1
 
-* [ ] Create a git repository (M5)
-* [ ] Make sure that all team members have write access to the GitHub repository (M5)
-* [ ] Create a dedicated environment for you project to keep track of your packages (M2)
-* [ ] Create the initial file structure using cookiecutter with an appropriate template (M6)
-* [ ] Fill out the `data.py` file such that it downloads whatever data you need and preprocesses it (if necessary) (M6)
-* [ ] Add a model to `model.py` and a training procedure to `train.py` and get that running (M6)
-* [ ] Remember to fill out the `requirements.txt` and `requirements_dev.txt` file with whatever dependencies that you
+* [x] Create a git repository (M5)
+* [x] Make sure that all team members have write access to the GitHub repository (M5)
+* [x] Create a dedicated environment for you project to keep track of your packages (M2)
+* [x] Create the initial file structure using cookiecutter with an appropriate template (M6)
+* [x] Fill out the `data.py` file such that it downloads whatever data you need and preprocesses it (if necessary) (M6)
+* [x] Add a model to `model.py` and a training procedure to `train.py` and get that running (M6)
+* [x] Remember to fill out the `requirements.txt` and `requirements_dev.txt` file with whatever dependencies that you
     are using (M2+M6)
-* [ ] Remember to comply with good coding practices (`pep8`) while doing the project (M7)
-* [ ] Do a bit of code typing and remember to document essential parts of your code (M7)
-* [ ] Setup version control for your data or part of your data (M8)
+* [x] Remember to comply with good coding practices (`pep8`) while doing the project (M7)
+* [x] Do a bit of code typing and remember to document essential parts of your code (M7)
+* [x] Setup version control for your data or part of your data (M8)
 * [ ] Add command line interfaces and project commands to your code where it makes sense (M9)
-* [ ] Construct one or multiple docker files for your code (M10)
-* [ ] Build the docker files locally and make sure they work as intended (M10)
-* [ ] Write one or multiple configurations files for your experiments (M11)
+* [x] Construct one or multiple docker files for your code (M10)
+* [x] Build the docker files locally and make sure they work as intended (M10)
+* [x] Write one or multiple configurations files for your experiments (M11)
 * [ ] Used Hydra to load the configurations and manage your hyperparameters (M11)
-* [ ] Use profiling to optimize your code (M12)
-* [ ] Use logging to log important events in your code (M14)
-* [ ] Use Weights & Biases to log training progress and other important metrics/artifacts in your code (M14)
-* [ ] Consider running a hyperparameter optimization sweep (M14)
+* [x] Use profiling to optimize your code (M12)
+* [x] Use logging to log important events in your code (M14)
+* [x] Use Weights & Biases to log training progress and other important metrics/artifacts in your code (M14)
+* [x] Consider running a hyperparameter optimization sweep (M14)
 * [ ] Use PyTorch-lightning (if applicable) to reduce the amount of boilerplate in your code (M15)
 
 ### Week 2
 
-* [ ] Write unit tests related to the data part of your code (M16)
-* [ ] Write unit tests related to model construction and or model training (M16)
-* [ ] Calculate the code coverage (M16)
-* [ ] Get some continuous integration running on the GitHub repository (M17)
-* [ ] Add caching and multi-os/python/pytorch testing to your continuous integration (M17)
+* [x] Write unit tests related to the data part of your code (M16)
+* [x] Write unit tests related to model construction and or model training (M16)
+* [x] Calculate the code coverage (M16)
+* [x] Get some continuous integration running on the GitHub repository (M17)
+* [x] Add caching and multi-os/python/pytorch testing to your continuous integration (M17)
 * [ ] Add a linting step to your continuous integration (M17)
 * [ ] Add pre-commit hooks to your version control setup (M18)
-* [ ] Add a continues workflow that triggers when data changes (M19)
-* [ ] Add a continues workflow that triggers when changes to the model registry is made (M19)
-* [ ] Create a data storage in GCP Bucket for your data and link this with your data version control setup (M21)
-* [ ] Create a trigger workflow for automatically building your docker images (M21)
-* [ ] Get your model training in GCP using either the Engine or Vertex AI (M21)
+* [x] Add a continues workflow that triggers when data changes (M19)
+* [x] Add a continues workflow that triggers when changes to the model registry is made (M19)
+* [x] Create a data storage in GCP Bucket for your data and link this with your data version control setup (M21)
+* [x] Create a trigger workflow for automatically building your docker images (M21)
+* [x] Get your model training in GCP using either the Engine or Vertex AI (M21)
 * [ ] Create a FastAPI application that can do inference using your model (M22)
 * [ ] Deploy your model in GCP using either Functions or Run as the backend (M23)
 * [ ] Write API tests for your application and setup continues integration for these (M24)
@@ -118,14 +118,14 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 1 fill here ---
+86
 
 ### Question 2
 > **Enter the study number for each member in the group**
 >
 > Example:
 >
-> *sXXXXXX, sXXXXXX, sXXXXXX*
+> *s234873, s234825, s234811*
 >
 > Answer:
 
@@ -138,12 +138,16 @@ will check the repositories and the code to verify your answers.
 > Recommended answer length: 100-200 words.
 >
 > Example:
-> *We used the third-party framework ... in our project. We used functionality ... and functionality ... from the*
-> *package to do ... and ... in our project*.
+> 
 >
 > Answer:
+>
+> 
 
 --- question 3 fill here ---
+
+We chose Gradio for our project because it’s intuitive and easy to use. One of our team members had some prior experience with it, which made getting started even smoother. Gradio simplified the process of creating an interactive interface, allowing us to focus on the core functionality without worrying about the details of UI design. It was practical, efficient, and helped us complete the project much faster. We’d recommend it to anyone looking for a straightforward way to add interactivity to their work.
+
 
 ## Coding environment
 
@@ -162,8 +166,11 @@ will check the repositories and the code to verify your answers.
 > *complete copy of our development environment, one would have to run the following commands*
 >
 > Answer:
-
+>
 --- question 4 fill here ---
+
+We created a conda environment to isolate our dependencies from other projects, where we installed the nececcary dependencies as we went along and faced new challenges. We then regularly updated our requirements.txt and requirements_dev.txt with the command pipreqs --force which would read the project and check which dependencies. When a member then needed to be up to date with the requirements, we could run pip install -r requirements.txt.
+
 
 ### Question 5
 
@@ -178,6 +185,9 @@ will check the repositories and the code to verify your answers.
 > *experiments.*
 >
 > Answer:
+>
+> We used the cookiecutter template from the course. We followed the structure of the folder pretty tightly as it aligned well with our needs. We filled out dockerfiles with api.dockerfile, evaluate.dockerfile and train.dockerfile and in src/animal_classification we created data.py, evaluate.py and api.py. We did not use the data folder as we pushed and stored everything in the google cloud storage bucket.
+> 
 
 --- question 5 fill here ---
 
@@ -195,6 +205,8 @@ will check the repositories and the code to verify your answers.
 > Answer:
 
 --- question 6 fill here ---
+
+From previous projects, we have experienced that it is critical to document the code and write good comments. Thus, we agreed that we could not write code without any comments, since you quickly lose track of what different code does.
 
 ## Version control
 
@@ -214,6 +226,10 @@ will check the repositories and the code to verify your answers.
 > Answer:
 
 --- question 7 fill here ---
+
+We have written seven tests in total. These cover the important parts of the app like making sure the AnimalClassificationCNN model gives the right output shape, works with small batches, and has trainable parameters. We also test the forward pass, check that dropout works properly, and verify the image transformation pipeline. On top of that, we’ve got a test to make sure the Gradio interface launches without any issues. These tests help us make sure the app works as expected.
+
+
 
 ### Question 8
 
