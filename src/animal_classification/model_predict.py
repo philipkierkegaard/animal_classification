@@ -6,6 +6,7 @@ from PIL import Image
 import gradio as gr
 from torchvision import transforms
 import numpy as np
+import os
 
 # Define class mapping
 CLASS_MAPPING = {0: 'cat', 1: 'dog', 2: 'elephant', 3: 'horse', 4: 'lion'}
@@ -59,4 +60,4 @@ def predict(image):
 iface = gr.Interface(fn=predict, inputs="image", outputs="text")
 
 if __name__ == "__main__":
-    iface.launch(server_name="0.0.0.0", server_port=7860)
+    iface.launch(server_name="0.0.0.0", server_port=int(os.getenv("PORT", 8080)))
