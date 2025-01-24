@@ -227,7 +227,7 @@ From previous projects, we have experienced that it is critical to document the 
 
 --- question 7 fill here ---
 
-We have written seven tests in total. These cover the important parts of the app like making sure the AnimalClassificationCNN model gives the right output shape, works with small batches, and has trainable parameters. We also test the forward pass, check that dropout works properly, and verify the image transformation pipeline. On top of that, we’ve got a test to make sure the Gradio interface launches without any issues. These tests help us make sure the app works as expected.
+We have written eight tests in total. These cover the important parts of the app like making sure the AnimalClassificationCNN model gives the right output shape, works with small batches, and has trainable parameters. We also test the train function, the forward pass, check that dropout works properly, and verify the image transformation pipeline. On top of that, we’ve got a test to make sure the Gradio interface launches without any issues. These tests help us make sure the app works as expected.
 
 
 
@@ -245,6 +245,8 @@ We have written seven tests in total. These cover the important parts of the app
 > Answer:
 
 --- question 8 fill here ---
+
+Our total code coverage was 43% and tested some important aspects of our model. Some parts of our code was very well covered like the api and model. 
 
 ### Question 9
 
