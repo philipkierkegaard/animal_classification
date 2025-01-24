@@ -246,7 +246,7 @@ We have written eight tests in total. These cover the important parts of the app
 
 --- question 8 fill here ---
 
-Our total code coverage was 43% and tested some important aspects of our model. Some parts of our code was very well covered like the api and model. 
+Our total code coverage was 43% and tested some important aspects of our model. Some parts of our code was fairly well covered like the training and the model, while some had little or no coverage like data and evaluate. Even if our co 
 
 ### Question 9
 
