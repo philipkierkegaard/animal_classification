@@ -522,7 +522,14 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 >
 > Answer:
 
+
 --- question 26 fill here ---
+
+We did not manage to implement monitoring for our deployed model, but it could significantly improve the longevity and reliability of the application. Monitoring would allow us to track key metrics such as latency, request success rates, and resource usage, ensuring the model runs efficiently and identifying bottlenecks early.
+
+Additionally, monitoring could detect data drift and track model performance metrics like prediction accuracy. Detecting data drift is crucial to maintain model effectiveness when input data starts to differ from the training data.
+
+Using tools like Prometheus for system metrics and Evidently for data drift detection could automate tracking and ensure the application remains reliable and effective over time.
 
 ## Overall discussion of project
 
@@ -542,6 +549,11 @@ Our total code coverage was 43% and tested some important aspects of our model. 
 > Answer:
 
 --- question 27 fill here ---
+We used a total of around 200 DKK in credits, with the most expensive part being the training with sweeps to find optimal hyperparameters. Due to resource and time constraints, we had to limit the number of epochs in the sweeps. On the n1-highmem-2 instance type, running one sweep with four epochs took about an hour, which made it challenging to explore a wide range of hyperparameters. Unfortunately, we couldn't utilize the GPU instances allocated to us due to technical issues with the quota setup, which further slowed down the process.
+
+On the positive side, data storage in Google Cloud was very affordable and reliable, making it easy to manage and access our datasets. However, the Google Cloud interface was initially overwhelming, as it includes a vast array of features and configurations. It took some time to familiarize ourselves with the platform and identify the specific tools and settings we needed.
+
+Overall, working in the cloud was a valuable experience, providing insights into resource management and deployment challenges. While it added complexity, it also offered scalability and flexibility that would be difficult to achieve in a purely local environment.
 
 ### Question 28
 
@@ -601,7 +613,15 @@ This setup ensures an efficient workflow by automating testing, building, and de
 > Answer:
 
 --- question 30 fill here ---
-The biggest challenges in the project was to get everything to work in google cloud, we had a lot of problems with getting the wandb, profiling, training and more to work via the cloud and with having the data stored in the bucket.
+The biggest challenges in the project were centered around integrating our workflow with Google Cloud Platform (GCP) and git actions. We faced significant hurdles in getting tools like Weights & Biases (W&B), profiling, and model training to work seamlessly in the cloud. One of the main difficulties was configuring our setup to access data stored in Google Cloud Storage buckets while ensuring proper permissions and connectivity. Misconfigurations often broke the training pipeline or caused data access issues, which slowed down our progress.
+
+Additionally, setting up W&B to track experiments in the cloud was challenging due to network authentication issues and API key configurations. Profiling the code in the cloud also introduced complexities that were not present in the local development environment. Despite our efforts, we couldn't get all aspects of the pipeline to work optimally in the cloud. For instance, some configurations for W&B and profiling tools remained inconsistent when deployed on GCP.
+
+However, we were able to achieve an optimal local setup, where all components worked seamlessly. Locally, our data pipeline, model training, and experiment tracking operated efficiently, allowing us to complete the project and validate our workflow.
+
+To overcome the cloud-related challenges, we relied heavily on official documentation for tools like GCP and W&B, consulted community forums, and employed an iterative testing approach. By running small, isolated parts of the pipeline, we could incrementally identify and resolve issues.
+
+While we did not fully optimize our cloud-based implementation, we ensured that the local setup was fully functional and could act as a foundation for future improvements. This experience taught us valuable lessons about cloud-based development and deployment, preparing us to address similar challenges more effectively in future projects.
 
 ### Question 31
 
