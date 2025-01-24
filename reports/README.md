@@ -378,6 +378,8 @@ To ensure our experiments are reproducible, we relied on tools like Docker and G
 > Answer:
 
 --- question 14 fill here ---
+![wandb](figures/wandb.png)
+
 
 ### Question 15
 
@@ -467,6 +469,7 @@ We used Vertex AI to run our training and evaluation jobs, which works on top of
 > Answer:
 
 --- question 19 fill here ---
+![artifacts](figures/bucket.png)
 
 ### Question 20
 
@@ -476,7 +479,7 @@ We used Vertex AI to run our training and evaluation jobs, which works on top of
 > Answer:
 
 --- question 20 fill here ---
-
+![artifacts](figures/artifact%20registry.png)
 ### Question 21
 
 > **Upload 1-2 images of your GCP cloud build history, so we can see the history of the images that have been build in**
@@ -485,6 +488,8 @@ We used Vertex AI to run our training and evaluation jobs, which works on top of
 > Answer:
 
 --- question 21 fill here ---
+![Build History](figures/build.png)
+
 
 ### Question 22
 
@@ -562,6 +567,12 @@ To invoke the service, users simply access the Gradio interface through the prov
 > Answer:
 
 --- question 25 fill here ---
+
+We performed unit testing for our API using pytest, focusing on ensuring the endpoints worked as expected and returned the correct responses. For example, we tested that the API correctly handled valid and invalid input formats and produced accurate predictions with valid input. These tests helped us verify the basic functionality and robustness of the API.
+
+However, we did not perform load testing. If we were to implement it, we would use a tool like Locust or Apache JMeter to simulate multiple concurrent users interacting with the API. This would help us identify how the API performs under heavy traffic, including measuring response times and throughput.
+
+The results from such a test would allow us to pinpoint performance bottlenecks, such as latency or server resource limitations, and optimize the system accordingly to ensure it scales effectively under load.
 
 ### Question 26
 
@@ -642,6 +653,8 @@ Yeah we implemented the frontend via gradio: https://gradio-api-132806470705.eur
 > Answer:
 
 --- question 29 fill here ---
+![pipeline](figures/pipeline.png)
+
 The starting point of the diagram is our local setup, where we develop and test our code. We also use Weights & Biases (W&B) to track our experiments, including hyperparameter sweeps and training metrics, which help us monitor and improve our model performance.
 
 Once the code is ready, we commit and push changes to GitHub, which serves as our version control system. This triggers GitHub Actions, our continuous integration (CI) pipeline. The pipeline performs several automated checks to maintain code quality:
