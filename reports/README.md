@@ -379,6 +379,13 @@ To ensure our experiments are reproducible, we relied on tools like Docker and G
 
 --- question 14 fill here ---
 ![wandb](figures/wandb.png)
+As seen in the image above, we used Weights & Biases (W&B) to track and monitor key metrics during our hyperparameter sweeps and training experiments. The first section of the image shows the final_precision and final_accuracy of different sweeps, such as "ethereal-sweep-1" and "leafy-sweep-1". These metrics are critical in identifying the best-performing configurations, enabling us to optimize our model for accuracy and precision.
+
+On the right, the graph tracks train_accuracy over the training steps for multiple sweeps. Monitoring train_accuracy during training provides insights into how well the model is learning from the data over time and helps identify potential issues, such as overfitting or underfitting. For instance, if the accuracy plateaus early or fluctuates significantly, it may indicate the need for changes in the model architecture, hyperparameters, or data preprocessing.
+
+These metrics were tracked across several hyperparameter sweeps to identify the optimal settings for parameters like learning rate, batch size, and dropout. By visualizing the results in W&B, we could quickly compare different runs, evaluate model performance, and make data-driven decisions about the next steps in the training pipeline.
+
+The use of W&B allowed us to automate the tracking process and maintain a clear, centralized record of all experiments, which was invaluable for keeping the project organized and efficient.
 
 
 ### Question 15
