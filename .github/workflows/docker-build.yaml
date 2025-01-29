@@ -6,11 +6,13 @@ on:
       - main  # Trigger on push to main branch
       - wandb
       - gradio_branch
+      - new_test
   pull_request:
     branches:
       - main  # Trigger on pull request to main branch
       - wandb
       - gradio_branch
+      - new_test
 
 jobs:
   build:
