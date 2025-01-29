@@ -11,3 +11,5 @@ google-cloud-storage
 argparse
 pyyaml
 tensorboard
+fastapi
+uvicorn

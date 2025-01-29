@@ -4,5 +4,5 @@ workerPoolSpecs:
   replicaCount: 1
   containerSpec:
     imageUri: "europe-west1-docker.pkg.dev/animal-classification-555/animal-classification/evaluate-image:latest"
-    command: []
-    args: []
+    command: ['python', 'src/animal_classification/train.py']
+    args: ['--epochs=10', '--batch-size=128']

@@ -7,17 +7,12 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install any needed packages specified in requirements.txt
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install torch torchvision fastapi uvicorn google-cloud-storage pillow
 
-# Install additional dependencies
-RUN pip install torch torchvision gradio google-cloud-storage pillow
-
-# Make port 8080 available to the world outside this container
+# Expose port 8080
 EXPOSE 8080
 
-# Define environment variable
-ENV NAME World
-
-# Run model_predict.py when the container launches
-CMD ["python", "src/animal_classification/model_predict.py"]
+# Start FastAPI server when the container launches
+CMD ["uvicorn", "src.animal_classification.model_predict:app", "--host", "0.0.0.0", "--port", "8080"]
